@@ -21,14 +21,17 @@ const NUMBER_OF_BALLS = { easy: { target: 3, active: 5 },
                          nightmare: { target: 20, active: 1 } 
                         };
 
+let isActiveBallPressed = false;
+let currentActiveBall = undefined;
+
 
 window.addEventListener(`resize`, winResizeEvent);
 window.addEventListener(`mousemove`, mouseMoveEvent);
 window.addEventListener(`mousedown`, activeBallMouseDown);
 window.addEventListener(`mouseup`, activeBallMouseUp);
 
-addActiveBalls(c, NUMBER_OF_BALLS.nightmare.active, ground);
-addTargetBalls(c, NUMBER_OF_BALLS.nightmare.target, ground);
+addActiveBalls(c, NUMBER_OF_BALLS.hard.active, ground);
+addTargetBalls(c, NUMBER_OF_BALLS.hard.target, ground);
 
 animate();
 
@@ -40,6 +43,10 @@ function animate() {
   
   ground.update();
   updateObjectsArray(c, activeBalls);
+  
+  if (isActiveBallPressed) currentActiveBall.update(mouse.x, mouse.y);
+  else currentActiveBall.update();
+  
   updateObjectsArray(c, targetBalls);
   cursor.update(mouse.x, mouse.y);
 }
@@ -116,11 +123,16 @@ function addTargetBalls(ctx, numberOfElements, unavailableArea) {
 }
 
 function addActiveBalls(ctx, numberOfElements, startingArea) {
+  
   for (let i = 0; i < numberOfElements; i++) {
      activeBalls.push(new Ball(ctx, startingArea.x, 
                                startingArea.y - startingArea.r + BALLS_RADIUS * 1.5, 
                                BALLS_RADIUS, `#f00`));
   }
+  console.log(activeBalls);
+  currentActiveBall = activeBalls.pop();
+  console.log(activeBalls);
+  
 }
 
 function winResizeEvent(e) {
@@ -134,9 +146,19 @@ function mouseMoveEvent(e) {
 }
 
 function activeBallMouseDown(e) {
+  
   console.log(`mouseDown`);
+  
+  if (Math.sqrt(Math.pow(currentActiveBall.x - e.x, 2) + Math.pow(currentActiveBall.y - e.y, 2)) < BALLS_RADIUS) {
+    console.log(`active ball clicked`);
+    isActiveBallPressed = true;
+    currentActiveBall.x = e.x;
+    currentActiveBall.y = e.y;
+  }
+  
 }
 
 function activeBallMouseUp(e) {
   console.log(`mouseUp`);
+  isActiveBallPressed = false;
 }
