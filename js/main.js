@@ -6,20 +6,29 @@ c = canvas.getContext(`2d`);
 canvas.width = innerWidth;
 canvas.height = innerHeight;
 
-const mouse = { x: 0, y: 0 };
-const cursor = new Cursor(c);
-const ground = new Ground(c);
-
-const targetBalls = [];
-const activeBalls = [];
-
 const BALLS_RADIUS = 20;
-const TARGET_BALLS_COLOR = `#add`;
 const NUMBER_OF_BALLS = { easy: { target: 3, active: 5 }, 
                          normal: { target: 6, active: 4 }, 
                          hard: { target: 10, active: 3 }, 
                          nightmare: { target: 20, active: 1 } 
                         };
+const BALLS_COLORS = {
+  active: `#700`,
+  target: `#add`,
+  current: `#f00`
+}
+
+
+
+const mouse = { x: 0, y: 0 };
+const cursor = new Cursor(c);
+const ground = new Ground(c);
+const ACTIVE_BALL_START_POS = { x: ground.x, y: ground.y - ground.r + BALLS_RADIUS * 1.5 };
+const strach = new Traectory(c, ACTIVE_BALL_START_POS.x, ACTIVE_BALL_START_POS.y, ACTIVE_BALL_START_POS.x, ACTIVE_BALL_START_POS.y);
+
+const targetBalls = [];
+const activeBalls = [];
+
 
 let isActiveBallPressed = false;
 let currentActiveBall = undefined;
@@ -44,8 +53,38 @@ function animate() {
   ground.update();
   updateObjectsArray(c, activeBalls);
   
-  if (isActiveBallPressed) currentActiveBall.update(mouse.x, mouse.y);
-  else currentActiveBall.update();
+  /* При нажатии на активный бол заставляем его перемещаться за курсором
+    о отрисовываем силу натяжения и направление
+  */
+  if (isActiveBallPressed) {
+    currentActiveBall.update(mouse.x, mouse.y);
+    strach.update(mouse.x, mouse.y);
+  }
+  else if(currentActiveBall.isActive) {
+    currentActiveBall.update();
+    strach.update();
+    currentActiveBall.checkCollision(targetBalls);
+    /* Данное условие выполнится сразу после остановки текущего 
+      активного шара
+    */
+    if (!currentActiveBall.isActive) {
+      /* Проверяем, остались ли не выбитые шары
+      */
+      targetBalls.forEach(el => {
+        if (!el.isBoundable) console.log(`YOU WIN!`);
+      });
+      currentActiveBall.color = BALLS_COLORS.target;
+      targetBalls.push(currentActiveBall);
+      /* При наличии активных болов в запасе берем один и делаем 
+        текущим, иначе игра проиграна
+      */
+      if (activeBalls.length > 0) currentActiveBall = activeBalls.pop();
+      else console.log(`Game Over Mate!`)
+    }
+  }
+  else {
+    currentActiveBall.update();
+  }
   
   updateObjectsArray(c, targetBalls);
   cursor.update(mouse.x, mouse.y);
@@ -77,8 +116,9 @@ function addTargetBalls(ctx, numberOfElements, unavailableArea) {
     
     availableXY = randomBallPosition(targetBalls, BALLS_RADIUS, unavailableArea);
     
-    targetBalls.push(new Ball(ctx, availableXY.x, availableXY.y, BALLS_RADIUS, TARGET_BALLS_COLOR));
+    targetBalls.push(new Ball(ctx, availableXY.x, availableXY.y, BALLS_RADIUS, BALLS_COLORS.target));
     
+    targetBalls[i].isBoundable = true;
   }
   
   
@@ -127,11 +167,10 @@ function addActiveBalls(ctx, numberOfElements, startingArea) {
   for (let i = 0; i < numberOfElements; i++) {
      activeBalls.push(new Ball(ctx, startingArea.x, 
                                startingArea.y - startingArea.r + BALLS_RADIUS * 1.5, 
-                               BALLS_RADIUS, `#f00`));
+                               BALLS_RADIUS, BALLS_COLORS.active));
   }
-  console.log(activeBalls);
+  
   currentActiveBall = activeBalls.pop();
-  console.log(activeBalls);
   
 }
 
@@ -147,18 +186,24 @@ function mouseMoveEvent(e) {
 
 function activeBallMouseDown(e) {
   
-  console.log(`mouseDown`);
-  
   if (Math.sqrt(Math.pow(currentActiveBall.x - e.x, 2) + Math.pow(currentActiveBall.y - e.y, 2)) < BALLS_RADIUS) {
     console.log(`active ball clicked`);
     isActiveBallPressed = true;
     currentActiveBall.x = e.x;
     currentActiveBall.y = e.y;
+    currentActiveBall.color = BALLS_COLORS.current;
   }
   
 }
 
 function activeBallMouseUp(e) {
-  console.log(`mouseUp`);
+
+  currentActiveBall.isActive = true;
   isActiveBallPressed = false;
+
+  currentActiveBall.vx = (strach.x2 - strach.x1) / 5;
+  currentActiveBall.vy = (strach.y2 - strach.y1) / 5;
+
+  strach.x1 = ACTIVE_BALL_START_POS.x;
+  strach.y1 = ACTIVE_BALL_START_POS.y;
 }
