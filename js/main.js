@@ -61,9 +61,9 @@ function animate() {
     strach.update(mouse.x, mouse.y);
   }
   else if(currentActiveBall.isActive) {
-    currentActiveBall.update();
     strach.update();
     currentActiveBall.checkCollision(targetBalls);
+    currentActiveBall.update();
     /* Данное условие выполнится сразу после остановки текущего 
       активного шара
     */
@@ -186,7 +186,9 @@ function mouseMoveEvent(e) {
 
 function activeBallMouseDown(e) {
   
-  if (Math.sqrt(Math.pow(currentActiveBall.x - e.x, 2) + Math.pow(currentActiveBall.y - e.y, 2)) < BALLS_RADIUS) {
+  console.log(mouse.x, mouse.y);
+  
+  if (Math.sqrt(Math.pow(currentActiveBall.x - e.x, 2) + Math.pow(currentActiveBall.y - e.y, 2)) < BALLS_RADIUS && !currentActiveBall.isActive) {
     console.log(`active ball clicked`);
     isActiveBallPressed = true;
     currentActiveBall.x = e.x;
@@ -198,12 +200,15 @@ function activeBallMouseDown(e) {
 
 function activeBallMouseUp(e) {
 
-  currentActiveBall.isActive = true;
-  isActiveBallPressed = false;
+  if (isActiveBallPressed) {
+    currentActiveBall.isActive = true;
+    isActiveBallPressed = false;
 
-  currentActiveBall.vx = (strach.x2 - strach.x1) / 5;
-  currentActiveBall.vy = (strach.y2 - strach.y1) / 5;
+    currentActiveBall.vx = (strach.x2 - strach.x1) / 5;
+    currentActiveBall.vy = (strach.y2 - strach.y1) / 5;
 
-  strach.x1 = ACTIVE_BALL_START_POS.x;
-  strach.y1 = ACTIVE_BALL_START_POS.y;
+    strach.x1 = ACTIVE_BALL_START_POS.x;
+    strach.y1 = ACTIVE_BALL_START_POS.y;
+    }
+  
 }
