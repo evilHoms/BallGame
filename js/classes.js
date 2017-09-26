@@ -104,7 +104,10 @@ class Ball {
   checkCollision(arrToCheck) {
     let arr = arrToCheck;
     arr.forEach((el) => {
-      if (Math.sqrt(Math.pow(this.x - el.x, 2) + Math.pow(this.y - el.y, 2)) < this.r + el.r) {
+      if (Math.sqrt(Math.pow(this.x - el.x, 2) + Math.pow(this.y - el.y, 2)) < this.r + el.r && el.isBoundable) {
+        
+        el.isBoundable = false;
+        el.color = BALLS_COLORS.hited;
         
         if (this.x < el.x + el.r / 3 * 2 && this.x > el.x - el.r / 3 * 2 && this.y > el.y) {
           this.vx = this.vx;

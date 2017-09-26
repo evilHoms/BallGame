@@ -15,6 +15,7 @@ const NUMBER_OF_BALLS = { easy: { target: 3, active: 5 },
 const BALLS_COLORS = {
   active: `#700`,
   target: `#add`,
+  hited: `#abb`,
   current: `#f00`
 }
 
@@ -32,6 +33,7 @@ const activeBalls = [];
 
 let isActiveBallPressed = false;
 let currentActiveBall = undefined;
+let isWin = false;
 
 
 window.addEventListener(`resize`, winResizeEvent);
@@ -51,6 +53,7 @@ function animate() {
   clear();
   
   ground.update();
+  updateObjectsArray(c, targetBalls);
   updateObjectsArray(c, activeBalls);
   
   /* При нажатии на активный бол заставляем его перемещаться за курсором
@@ -70,9 +73,11 @@ function animate() {
     if (!currentActiveBall.isActive) {
       /* Проверяем, остались ли не выбитые шары
       */
+      isWin = true;
       targetBalls.forEach(el => {
-        if (!el.isBoundable) console.log(`YOU WIN!`);
+        if (el.isBoundable) isWin = false;
       });
+      if (isWin) console.log(`You Win!`);
       currentActiveBall.color = BALLS_COLORS.target;
       targetBalls.push(currentActiveBall);
       /* При наличии активных болов в запасе берем один и делаем 
@@ -86,7 +91,6 @@ function animate() {
     currentActiveBall.update();
   }
   
-  updateObjectsArray(c, targetBalls);
   cursor.update(mouse.x, mouse.y);
 }
 
