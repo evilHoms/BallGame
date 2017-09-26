@@ -39,8 +39,8 @@ window.addEventListener(`mousemove`, mouseMoveEvent);
 window.addEventListener(`mousedown`, activeBallMouseDown);
 window.addEventListener(`mouseup`, activeBallMouseUp);
 
-addActiveBalls(c, NUMBER_OF_BALLS.hard.active, ground);
-addTargetBalls(c, NUMBER_OF_BALLS.hard.target, ground);
+addActiveBalls(c, NUMBER_OF_BALLS.easy.active, ground);
+addTargetBalls(c, NUMBER_OF_BALLS.easy.target, ground);
 
 animate();
 
@@ -185,8 +185,6 @@ function mouseMoveEvent(e) {
 }
 
 function activeBallMouseDown(e) {
-  
-  console.log(mouse.x, mouse.y);
   
   if (Math.sqrt(Math.pow(currentActiveBall.x - e.x, 2) + Math.pow(currentActiveBall.y - e.y, 2)) < BALLS_RADIUS && !currentActiveBall.isActive) {
     console.log(`active ball clicked`);

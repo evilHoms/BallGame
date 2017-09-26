@@ -106,13 +106,95 @@ class Ball {
     arr.forEach((el) => {
       if (Math.sqrt(Math.pow(this.x - el.x, 2) + Math.pow(this.y - el.y, 2)) < this.r + el.r) {
         
+        if (this.x < el.x + el.r / 3 * 2 && this.x > el.x - el.r / 3 * 2 && this.y > el.y) {
+          this.vx = this.vx;
+          this.vy = -this.vy;
+        }
+        else if (this.y > el.y - el.r / 3 * 2 && this.y < el.y + el.r / 3 * 2 && this.x < el.x) {
+          this.vx = -this.vx;
+          this.vy = this.vy;
+        }
+        else if (this.x < el.x + el.r / 3 * 2 && this.x > el.x - el.r / 3 * 2 && this.y < el.y) {
+          this.vx = this.vx;
+          this.vy = -this.vy;
+        }
+        else if (this.y < el.y + el.r / 3 * 2 && this.y > el.y - el.r / 3 * 2 && this.x > el.x) {
+          this.vx = -this.vx;
+          this.vy = this.vy;
+        }
+        else if (this.x > el.x && this.y < el.y) {
+          
+          if (this.vx < 0 && this.vy > 0) {
+            let xy = this.vx;
+            this.vx = this.vy;
+            this.vy = xy;
+          }
+          else if (this.vx > 0 && this.vy > 0 || this.vx < 0 && this.vy < 0) {
+            let xy = this.vx;
+            this.vx = this.vy;
+            this.vy = xy;
+          }
+          else {
+            console.log(`1 error wrong dirrection`);
+          }
+          
+        }
+        else if (this.x > el.x && this.y > el.y) {
+          
+          if (this.vx < 0 && this.vy < 0) {
+            let xy = this.vx;
+            this.vx = -this.vy;
+            this.vy = -xy;
+          }
+          else if (this.vx > 0 && this.vy < 0 || this.vx < 0 && this.vy > 0) {
+            let xy = this.vx;
+            this.vx = -this.vy;
+            this.vy = -xy;
+          }
+          else {
+            console.log(`3 error wrong dirrection`);
+          }
+          
+        }
+        else if (this.x < el.x && this.y < el.y) {
+          
+          if (this.vx > 0 && this.vy > 0) {
+            let xy = this.vx;
+            this.vx = -this.vy;
+            this.vy = -xy;
+          }
+          else if (this.vx > 0 && this.vy < 0 || this.vx < 0 && this.vy > 0) {
+            let xy = this.vx;
+            this.vx = -this.vy;
+            this.vy = -xy;
+          }
+          else {
+            console.log(`7 error wrong dirrection`);
+          }
+          
+        }
+        else if (this.x < el.x && this.y > el.y) {
+          
+          if (this.vx > 0 && this.vy < 0) {
+            let xy = this.vx;
+            this.vx = this.vy;
+            this.vy = xy;
+          }
+          else if (this.vx < 0 && this.vy < 0 || this.vx > 0 && this.vy > 0) {
+            let xy = this.vx;
+            this.vx = this.vy;
+            this.vy = -xy;
+          }
+          else {
+            console.log(`5 error wrong dirrection`);
+          }
+          
+        }
+        
         let rProection = {};
 
         rProection.x = Math.abs(el.x - this.x) * (this.r + el.r) / Math.sqrt(Math.pow((el.x - this.x), 2) + Math.pow(el.y - this.y, 2));
         rProection.y = Math.abs(el.y - this.y) * (this.r + el.r) / Math.sqrt(Math.pow((el.x - this.x), 2) + Math.pow(el.y - this.y, 2));
-        
-        /* Упростить поправку положения изгнать застревания
-        */
         
         /* Поправка положения
         */
@@ -132,65 +214,6 @@ class Ball {
         
         /*this.vx = 0;
         this.vy = 0;*/
-        
-        if (this.x < el.x + el.r * 2 / 3 && this.x > el.x - el.r * 2 / 3 && this.y > el.y) {
-          console.log(`4`);
-          this.vx = this.vx;
-          this.vy = -this.vy;
-        }
-        else if(this.y > el.y - el.r * 2 / 3 && this.y < el.x + el.r * 2 / 3 && this.x < el.x) {
-          console.log(`6`);
-          this.vx = -this.vx;
-          this.vy = this.vy;
-        }
-        else if(this.y > el.y - el.r * 2 / 3 && this.y < el.x + el.r * 2 / 3 && this.x > el.x) {
-          console.log(`8`);
-          this.vx = this.vx;
-          this.vy = -this.vy;
-        }
-        else if (this.x < el.x + el.r * 2 / 3 && this.x > el.x - el.r * 2 / 3 && this.y < el.y) {
-          console.log(`2`);
-          this.vx = -this.vx;
-          this.vy = this.vy;
-        }
-        else if (this.x > el.x && this.y < el.y) {
-          console.log(`1`);
-          let xy = this.vx;
-          this.vx = this.vy;
-          this.vy = xy;
-        }
-        else if (this.x > el.x && this.y > el.y) {
-          console.log(`3`);
-          let xy = this.vx;
-          this.vx = this.vy;
-          this.vy = xy;
-        }
-        else if (this.x < el.x && this.y < el.y) {
-          console.log(`7`);
-          let xy = this.vx;
-          this.vx = this.vy;
-          this.vy = xy;
-        }
-        else if (this.x < el.x && this.y > el.y) {
-          console.log(`5`);
-          let xy = this.vx;
-          this.vx = this.vy;
-          this.vy = xy;
-        }
-        
-        
-        /*if (this.vx > 0) {
-          this.vx = (   (2 * Math.sqrt(Math.pow((this.x + el.x) / 2 - this.x, 2)) / this.r - this.vx / Math.sqrt(Math.pow(this.vx, 2) + Math.pow(this.vy, 2))) * Math.sqrt(Math.pow(this.vx, 2) + Math.pow(this.vy, 2))  );
-        }
-        else if (this.vx < 0) {
-          this.vx = (   (2 * Math.sqrt(Math.pow((this.x + el.x) / 2 - this.x, 2)) / this.r + this.vx / Math.sqrt(Math.pow(this.vx, 2) + Math.pow(this.vy, 2))) * Math.sqrt(Math.pow(this.vx, 2) + Math.pow(this.vy, 2))  );
-        }
-        
-        
-        
-        this.vy = Math.sqrt(Math.pow(Math.sqrt(Math.pow(this.vx, 2) + Math.pow(this.vy, 2)),2) + Math.pow(this.vx,2));*/
-        
-        console.log(this.vx, this.vy);
         
       }
       if (this.x + this.r > innerWidth) {
