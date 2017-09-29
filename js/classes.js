@@ -295,3 +295,89 @@ class Traectory {
     this.draw(); 
   }
 }
+
+class Message {
+  constructor(ctx, text, x, y, width, height, textPosX, textPosY, color) {
+    this.c = ctx;
+    this.text = text;
+    this.x = x;
+    this.y = y;
+    this.color = color;
+    this.width = width;
+    this.height = height;
+    this.textPosX = textPosX;
+    this.textPosY = textPosY;
+ }
+  
+  draw() {
+    let c = this.c;
+    c.beginPath();
+    c.rect(this.x, this.y, this.width, this.height);
+    c.fillStyle = `#fff`;
+    c.font = `normal ${(this.width - this.x) / 5}px Arial`;
+    c.fill();
+    c.strokeText(this.text, (this.x + this.width) / this.textPosX, (this.y+ this.height) / this.textPosY);
+  }
+  
+  update(x = this.x, y = this.y) {
+    this.x = x;
+    this.y = y;
+    
+    this.draw();
+  }
+}
+
+class Button {
+  constructor(ctx, x = 0, y = 0, w = 50, h = 50, text = `empty`) {
+    this.c = ctx;
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    this.text = text;
+    this.isActive = false;
+  }
+  
+  draw() {
+    let c = this.c;
+    c.beginPath();
+    c.rect(this.x, this.y, this.w, this.h);
+    c.strokeStyle = `#000`;
+    c.stroke();
+    c.font = `normal ${Math.abs(this.x - this.h) / 8}px Arial`;
+    c.fillStyle = `#000`;
+    c.fillText(this.text, this.x + this.w / 8, this.y + this.h / 1.5);
+  }
+  
+  update(x = this.x, y = this.y) {
+    this.x = x;
+    this.y = y;
+    
+    this.draw();
+  }
+}
+
+class Text {
+  constructor(ctx, x, y, text, fontSize) {
+    this.c = ctx;
+    this.x = x;
+    this.y = y;
+    this.text = text;
+    this.fontSize = fontSize;
+    this.isActive = false;
+  }
+  
+  draw() {
+    let c = this.c;
+    c.font = `normal ${this.fontSize}px Arial`;
+    c.fillStyle = `#000`;
+    c.fillText(this.text, this.x, this.y);
+  }
+  
+  update(x = this.x, y = this.y) {
+    this.x = x;
+    this.y = y;
+    
+    this.draw();
+  }
+}
